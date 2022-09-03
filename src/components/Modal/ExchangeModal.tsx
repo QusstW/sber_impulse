@@ -50,6 +50,8 @@ const ExchangeModal = () => {
     if (currentSellingItem?.type === "salesman") {
       updateArr(salesmanSellItems, currentSellingItem, "salesman")
     }
+
+    setSliderValue(1);
   };
 
   const updateArr = (modifyArr: TSellItem[], currentSellingItem: TCurrentSellingItem, type: string) => {

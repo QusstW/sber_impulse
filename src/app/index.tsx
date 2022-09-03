@@ -7,7 +7,6 @@ import css from "./app.module.css";
 import ExchangeColumn from "../components/ExchangeColumn/ExchangeColumn";
 import { getSellItems } from "../redux/exchange/actions";
 import ExchangeModal from "../components/Modal/ExchangeModal";
-import { makeADeal } from "../helpers/makeADeal";
 
 const App = () => {
   const dispatch = useAppDispatch();

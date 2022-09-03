@@ -70,6 +70,12 @@ export const exchangeSlice = createSlice({
         },
         setDifferenceSale: (state, action) => {
             state.differenceSale = action.payload;
+        },
+        setMyMoney: (state, action) => {
+            state.myMoney = action.payload;
+        },
+        setSalesManMoney: (state, action) => {
+            state.salesManMoney = action.payload;
         }
 
     }
@@ -81,7 +87,9 @@ export const {
     setModal,
     setCurrentSellingItem,
     setSaleItems,
-    setDifferenceSale
+    setDifferenceSale,
+    setMyMoney,
+    setSalesManMoney
 } = exchangeSlice.actions;
 
 export const exchangeReducer = exchangeSlice.reducer;
