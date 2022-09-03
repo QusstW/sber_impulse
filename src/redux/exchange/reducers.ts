@@ -2,25 +2,41 @@ import { createSlice } from "@reduxjs/toolkit";
 
 
 type TExchangeType = {
-    test: number
+    mySellItems: Array<TSellItem>,
+    salesmanSellItems: Array<TSellItem>,
+    saleItems: Array<TSellItem>
 };
 
+export type TSellItem = {
+    Name: string,
+    createdAt: string,
+    id: string,
+    price: number,
+    quantity: number
+}
+
 const initialState: TExchangeType = {
-    test: 2
+    mySellItems: [],
+    salesmanSellItems: [],
+    saleItems: []
 };
 
 export const exchangeSlice = createSlice({
     name: 'exchange',
     initialState,
     reducers: {
-        setTest: (state, action) => {
-            state.test = action.payload;
+        setMySellItems: (state, action) => {
+            state.mySellItems = action.payload;
+        },
+        setSalesmanItems: (state, action) => {
+            state.salesmanSellItems = action.payload;
         }
     }
 });
 
 export const {
-    setTest
+    setMySellItems,
+    setSalesmanItems
 } = exchangeSlice.actions;
 
 export const exchangeReducer = exchangeSlice.reducer;

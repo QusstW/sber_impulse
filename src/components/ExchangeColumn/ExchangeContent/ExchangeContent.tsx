@@ -1,18 +1,24 @@
-import React from 'react';
+import React from "react";
+import { TSellItem } from "../../../redux/exchange/reducers";
+import css from "./content.module.css";
 
-import css from './content.module.css';
+type TPropsType = {
+  itemSell: TSellItem
+}
 
-const ExchangeContent = () => {
-    return(
-        <div className={css.content}>
-            <div className={css.contentItem}>
-            <div>Яблоко(71)</div>
-            <div>5 ед</div>
-            </div>
-            
-        </div>
-    )
+const ExchangeContent = (props: TPropsType) => {
+
+  const { itemSell } = props;
+  
+
+  return (
+    <div className={css.content}>
+      <div className={css.contentItem}>
+        <div>{itemSell.Name} ({itemSell.quantity})</div>
+        <div>{itemSell.price}</div>
+      </div>
+    </div>
+  );
 };
 
 export default ExchangeContent;
-

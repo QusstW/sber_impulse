@@ -1,7 +1,6 @@
 .content{
-
     padding: 0.625rem;
-
+    cursor: pointer;
 }
 
 .content .contentItem {
