@@ -1,0 +1,11 @@
+.header {
+    padding: 0.625rem;
+    border-bottom: 0.5px solid rgb(56, 164, 190);
+}
+
+.header .extraHeader {
+    border: 0.5px solid rgb(218, 218, 218);
+    padding: 0.1875rem;
+    border-radius: 3px;
+    
+}

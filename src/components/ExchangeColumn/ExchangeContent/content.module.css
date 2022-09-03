@@ -1,0 +1,14 @@
+.content{
+
+    padding: 0.625rem;
+
+}
+
+.content .contentItem {
+    justify-content: space-between;
+    display: flex;
+    border: 1.5px solid rgb(73, 73, 73);
+    padding: 0.1875rem;
+    border-radius: 3px;
+    box-shadow: 2px 2px 2px grey;
+}
