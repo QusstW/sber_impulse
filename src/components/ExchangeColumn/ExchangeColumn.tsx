@@ -29,6 +29,7 @@ const ExchangeColumn = (props: TPropsType) => {
   const itemsToRender = getItemsToRender();
 
   const makeADeal = () => {
+    if(differenceSale && (Math.abs(differenceSale) > myMoney || Math.abs(differenceSale) > salesManMoney)) return console.log('нужно больше золота')
     const purchased = saleItems.filter((el) => el.type === 'salesman');
     const sold = saleItems.filter((el) => el.type === 'My');
 
