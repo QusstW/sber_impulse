@@ -1,0 +1,10 @@
+export const YOUR_BASKET = 'Ваша корзина';
+export const SALESMAN_BASKET = 'Корзина продавца';
+export const SALE_STATUS = 'статус покупки/продажи: Продажа'; 
+export const PURCHASE_STATUS = 'статус покупки/продажи: Покупка';
+export const TRADE_STATUS = 'статус покупки/продажи: Обмен с учётом разницы цены';
+export const MONEY = 'Деньги';
+export const YOU_GET = 'Вы получаете';
+export const YOU_WILL_SPEND = 'Вы расходуете';
+export const TRANSACTION_AMOUNT = 'Сумма сделки..';
+export const DEFAULT_ZERO_VALUE = 0;

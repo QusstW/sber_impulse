@@ -1,78 +1,97 @@
-import { Button } from "@mui/material";
 import React from "react";
+import { Button } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import ExchangeContent from "./ExchangeContent/ExchangeContent";
 import ExchangeHeader from "./ExchangeHeader/ExchangeHeader";
 
-import css from './column.module.css'
-import { setMyMoney, setMySellItems, setSaleItems, setSalesmanItems, setSalesManMoney } from "../../redux/exchange/reducers";
+import css from "./column.module.css";
+import {
+  setMyMoney,
+  setMySellItems,
+  setSaleItems,
+  setSalesmanItems,
+  setSalesManMoney,
+} from "../../redux/exchange/reducers";
+import { saleStatus, TSellItem, TsellItemSelling } from "../../redux/exchange/types";
+import { getSellItems } from "../../redux/exchange/actions";
 
 type TPropsType = {
   type: string;
+  setModalMessage?: React.Dispatch<React.SetStateAction<boolean>>
 };
 
 const ExchangeColumn = (props: TPropsType) => {
-  const { type } = props;
+  const { type, setModalMessage } = props;
 
-  const { mySellItems, saleItems, salesmanSellItems, differenceSale, myMoney, salesManMoney } = useAppSelector(
-    (state) => state.exchange
-  );
+  const {
+    mySellItems,
+    saleItems,
+    salesmanSellItems,
+    differenceSale,
+    myMoney,
+    salesManMoney,
+  } = useAppSelector((state) => state.exchange);
 
   const dispatch = useAppDispatch();
 
+  const isNotEnoughMoney = differenceSale && (Math.abs(differenceSale) > myMoney || Math.abs(differenceSale) > salesManMoney);
+
   const getItemsToRender = () => {
-    if (type === "My") return mySellItems;
-    else if (type === "salesman") return salesmanSellItems;
-    else if (type === "sale") return saleItems;
+    if (type === saleStatus.MY) return mySellItems;
+    else if (type === saleStatus.SALESMAN) return salesmanSellItems;
+    else if (type === saleStatus.SALE) return saleItems;
   };
 
   const itemsToRender = getItemsToRender();
 
   const makeADeal = () => {
-    if(differenceSale && (Math.abs(differenceSale) > myMoney || Math.abs(differenceSale) > salesManMoney)) return console.log('нужно больше золота')
-    const purchased = saleItems.filter((el) => el.type === 'salesman');
-    const sold = saleItems.filter((el) => el.type === 'My');
-
-    let newMySellItems;
-    let newSalesmanSellItems;
-
-    purchased.forEach((pur) => {
-      if(mySellItems.find((mi) => mi.id === pur.id)) {
-        newMySellItems = mySellItems.map((nmi) => {
-          return{
-            ...nmi,
-            quantity: nmi.quantity + pur.quantity
-          }
-        })
-      } else {
-        newMySellItems = [...mySellItems, pur]
-      }
-    })
-
-    sold.forEach((s) => {
-      if(salesmanSellItems.find((ssi) => ssi.id === s.id)) {
-        newSalesmanSellItems = salesmanSellItems.map((nwss) => {
-          return {
-            ...nwss,
-            quantity: nwss.quantity + s.quantity
-          }
-        });
-      } else {
-        newSalesmanSellItems = [...salesmanSellItems, s]
-      }
-    })
+    if (isNotEnoughMoney) {
+      setModalMessage && setModalMessage(true);
+      dispatch(getSellItems());
+      return;
+    }
     
-    if(purchased.length) {
+    const filteredItemsToMe = saleItems.filter((el) => el.type === saleStatus.SALESMAN);
+    const filteredItemsToSalesMan = saleItems.filter((el) => el.type === saleStatus.MY);
+
+    const newMySellItems = getNewUpdateItems(filteredItemsToMe, mySellItems);
+    const newSalesmanSellItems = getNewUpdateItems(filteredItemsToSalesMan, salesmanSellItems);
+
+    if (filteredItemsToMe.length) {
       dispatch(setMySellItems(newMySellItems));
     }
-    if(sold.length) {
+    if (filteredItemsToSalesMan.length) {
       dispatch(setSalesmanItems(newSalesmanSellItems));
     }
     dispatch(setSaleItems([]));
-    if(differenceSale) {
-      dispatch(setMyMoney(myMoney + differenceSale));
-      dispatch(setSalesManMoney(salesManMoney + Math.abs(differenceSale)));
+    //поправить
+    if (differenceSale) {
+      if (differenceSale < 0) {
+        dispatch(setMyMoney(myMoney + differenceSale));
+        dispatch(setSalesManMoney(salesManMoney + Math.abs(differenceSale)));
+      } else if (differenceSale > 0) {
+        dispatch(setMyMoney(myMoney + differenceSale));
+        dispatch(setSalesManMoney(salesManMoney + -differenceSale));
+      }
     }
+  };
+
+  const getNewUpdateItems = (filtredArr: Array<TsellItemSelling>, comparableArr: Array<TSellItem>) => {
+    let finalUpdatedArr;
+
+    filtredArr.forEach((formedElement) => {
+      if (comparableArr.find((originalElement) => originalElement.id === formedElement.id)) {
+        finalUpdatedArr = comparableArr.map((comp) => {
+          return {
+            ...comp,
+            quantity: comp.quantity + formedElement.quantity,
+          };
+        });
+      } else {
+        finalUpdatedArr = [...mySellItems, formedElement];
+      }
+    });
+    return finalUpdatedArr;
   }
 
   return (
@@ -81,7 +100,7 @@ const ExchangeColumn = (props: TPropsType) => {
       {itemsToRender?.map((el, index) => (
         <ExchangeContent key={el.Name + index} itemSell={el} type={type} />
       ))}
-      {type === "sale" && (
+      {type === saleStatus.SALE && (
         <Button variant="outlined" onClick={makeADeal} className={css.button_A}>
           Make a Deal
         </Button>

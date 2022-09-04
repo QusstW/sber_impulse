@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-
+import { TCurrentSellingItem, TSellItem, TsellItemSelling } from "./types";
 
 type TExchangeType = {
     mySellItems: Array<TSellItem>,
@@ -12,31 +12,7 @@ type TExchangeType = {
     differenceSale: number | null,
 };
 
-export type TCurrentSellingItem = {
-    Name: string,
-    createdAt: string,
-    id: string,
-    price: number,
-    quantity: number,
-    type: string
-};
 
-export type TSellItem = {
-    Name: string,
-    createdAt: string,
-    id: string,
-    price: number,
-    quantity: number,
-}
-
-type TsellItemSelling = {
-    Name: string,
-    createdAt: string,
-    id: string,
-    price: number,
-    quantity: number,
-    type: string
-}
 
 const initialState: TExchangeType = {
     mySellItems: [],

@@ -5,13 +5,16 @@ import {
   setModal,
   setMySellItems,
   setSaleItems,
-  setSalesmanItems,
-  TCurrentSellingItem,
-  TSellItem,
+  setSalesmanItems
 } from "../../redux/exchange/reducers";
+import { TSellItem, TCurrentSellingItem, saleStatus } from "../../redux/exchange/types";
+import { MODAL_BOX_STYLES } from "../../constants/styles";
+
+
+const DEFAULT_SLIDER_VALUE = 1;
 
 const ExchangeModal = () => {
-  const [sliderValue, setSliderValue] = React.useState<number>(1);
+  const [sliderValue, setSliderValue] = React.useState<number>(DEFAULT_SLIDER_VALUE);
 
   const {
     modal,
@@ -21,18 +24,6 @@ const ExchangeModal = () => {
     salesmanSellItems,
   } = useAppSelector((state) => state.exchange);
   const dispatch = useAppDispatch();
-
-  const style = {
-    position: "absolute" as "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: 400,
-    bgcolor: "background.paper",
-    border: "2px solid #000",
-    boxShadow: 24,
-    p: 4,
-  };
 
   const onCLose = () => {
     dispatch(setModal(false));
@@ -44,33 +35,33 @@ const ExchangeModal = () => {
 
   const submit = () => {
     onCLose();
-    if (currentSellingItem?.type === "My") {
-      updateArr(mySellItems, currentSellingItem, "My")
+    if (currentSellingItem?.type === saleStatus.MY) {
+      updateArr(mySellItems, currentSellingItem, saleStatus.MY)
     }
-    if (currentSellingItem?.type === "salesman") {
-      updateArr(salesmanSellItems, currentSellingItem, "salesman")
+    if (currentSellingItem?.type === saleStatus.SALESMAN) {
+      updateArr(salesmanSellItems, currentSellingItem, saleStatus.SALESMAN)
     }
 
-    setSliderValue(1);
+    setSliderValue(DEFAULT_SLIDER_VALUE);
   };
 
   const updateArr = (modifyArr: TSellItem[], currentSellingItem: TCurrentSellingItem, type: string) => {
     const isPresentInSale = saleItems.find((el) => el.id === currentSellingItem.id);
+    const isFullSliderValue = sliderValue === currentSellingItem.quantity;
 
-    if (sliderValue === currentSellingItem.quantity && !isPresentInSale) {
-      const newSellItems = modifyArr.filter(
-        (el) => el.id !== currentSellingItem.id
-      );
+    if (isFullSliderValue && !isPresentInSale) {
+      const newSellItems = modifyArr.filter((el) => el.id !== currentSellingItem.id);
       const newsaleItems = [...saleItems, currentSellingItem];
 
-      if(type === 'My') {
+      if(type === saleStatus.MY) {
         dispatch(setMySellItems(newSellItems));
         dispatch(setSaleItems(newsaleItems));
       } else {
         dispatch(setSalesmanItems(newSellItems));
         dispatch(setSaleItems(newsaleItems));
       }
-    } else if(sliderValue === currentSellingItem.quantity && isPresentInSale) {
+    } 
+    else if(isFullSliderValue && isPresentInSale) {
         const newSaleItems = modifyArr.filter((el) => el.id !== currentSellingItem.id);
 
         const newSalingItems = saleItems.map((el) => {
@@ -82,14 +73,13 @@ const ExchangeModal = () => {
           } else return el;
         });
 
-        if(type === "My") {
+        if(type === saleStatus.MY) {
           dispatch(setMySellItems(newSaleItems));
           dispatch(setSaleItems(newSalingItems));
         } else {
           dispatch(setSalesmanItems(newSaleItems));
           dispatch(setSaleItems(newSalingItems));
         }
-
     } 
     else {
       const newSellItems = modifyArr.map((el) => {
@@ -122,7 +112,7 @@ const ExchangeModal = () => {
         dispatch(setSaleItems(newsaleItems));
       }
     }
-  }
+  };
 
   return (
     <Modal
@@ -131,7 +121,7 @@ const ExchangeModal = () => {
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
-      <Box sx={style}>
+      <Box sx={MODAL_BOX_STYLES}>
         <Typography id="modal-modal-title" variant="h6" component="h2">
           Выберите колличество:
         </Typography>
